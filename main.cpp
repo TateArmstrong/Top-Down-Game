@@ -1,5 +1,5 @@
 #include <raylib.h>
-#include <rlgl.h>
+#include <raymath.h>
 #include <iostream>
 
 struct Player{
@@ -15,7 +15,7 @@ struct Player{
     }
 
     Vector2 GetOrigin2(){
-        return {x, y};
+        return {66.0f, 77.0f};
     }
 
     Vector2 GetOrigin(){
@@ -50,27 +50,28 @@ int main(void){
     player.initPlayer((float)GetScreenWidth()/2, (float)GetScreenHeight()/2,
          300.0f, 40.0f, 180.0f, LoadTexture("rsrc/top_down_man.png"));
 
-    Rectangle soruceRect = {0.0f, 0.0f, player.sprite.width, player.sprite.height};
-    Rectangle destRect = {player.x, player.y, player.sprite.width, player.sprite.height};
+    // Source rectangle (part of the texture to use for drawing)
+    Rectangle soruceRect = {0.0f, 0.0f, (float)player.sprite.width, (float)player.sprite.height};
+    // Destination rectangle (screen rectangle where drawing part of texture)
+    Rectangle destRect = {player.x, player.y, (float)player.sprite.width, (float)player.sprite.height};
 
-    int rotation = 0;
+    float rotation = 0.0f;
 
     while(!WindowShouldClose()){
 
         // Player Inputs
         PlayerInput(player);
 
-        //rotation++;
+        rotation = (atan2(GetMouseY() - player.y, GetMouseX() - player.x) * 180) / PI;
+        //std::cout << rotation << std::endl;
+
+        destRect = {player.x, player.y, (float)player.sprite.width, (float)player.sprite.height};
 
         ClearBackground(RAYWHITE);
 
         BeginDrawing();
 
-            DrawRectangleRec(soruceRect, BLACK);
-            DrawRectangleRec(destRect, BLACK);
             DrawTexturePro(player.sprite, soruceRect, destRect, player.GetOrigin2(), rotation, WHITE);
-            //DrawTextureEx(player.sprite, (Vector2){0.0f, 0.0f}, player.rotation, 300, WHITE);
-            DrawCircleV(player.GetOrigin2(), player.radius, BLACK);
 
         EndDrawing();
     }
