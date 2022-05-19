@@ -14,6 +14,20 @@ struct Player{
         sprite = sprite_;
     }
 
+    // Source rectangle (part of the texture to use for drawing)
+    Rectangle GetSource(){
+        return {0.0f, 0.0f, (float)sprite.width, (float)sprite.height};
+    }
+
+    // Destination rectangle (screen rectangle where drawing part of texture)
+    Rectangle GetDest(){
+        return {x, y, (float)sprite.width, (float)sprite.height};
+    }
+
+    float GetRotation(){
+        return (atan2(GetMouseY() - y, GetMouseX() - x) * 180) / PI;
+    }
+
     Vector2 GetOrigin2(){
         return {66.0f, 77.0f};
     }
@@ -50,28 +64,17 @@ int main(void){
     player.initPlayer((float)GetScreenWidth()/2, (float)GetScreenHeight()/2,
          300.0f, 40.0f, 180.0f, LoadTexture("rsrc/top_down_man.png"));
 
-    // Source rectangle (part of the texture to use for drawing)
-    Rectangle soruceRect = {0.0f, 0.0f, (float)player.sprite.width, (float)player.sprite.height};
-    // Destination rectangle (screen rectangle where drawing part of texture)
-    Rectangle destRect = {player.x, player.y, (float)player.sprite.width, (float)player.sprite.height};
-
-    float rotation = 0.0f;
-
     while(!WindowShouldClose()){
 
         // Player Inputs
         PlayerInput(player);
 
-        rotation = (atan2(GetMouseY() - player.y, GetMouseX() - player.x) * 180) / PI;
-        //std::cout << rotation << std::endl;
-
-        destRect = {player.x, player.y, (float)player.sprite.width, (float)player.sprite.height};
-
         ClearBackground(RAYWHITE);
 
         BeginDrawing();
 
-            DrawTexturePro(player.sprite, soruceRect, destRect, player.GetOrigin2(), rotation, WHITE);
+            DrawTexturePro(player.sprite, player.GetSource(), player.GetDest(), player.GetOrigin2(),
+                player.GetRotation(), WHITE);
 
         EndDrawing();
     }
